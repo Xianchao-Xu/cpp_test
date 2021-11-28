@@ -3,7 +3,7 @@
 #include <TopoDS_Shape.hxx>
 #include <IFSelect_ReturnStatus.hxx>
 #include <IFSelect_PrintCount.hxx>
-#include <IVtkTools_ShapeDataSource.hxx>
+#include <IVtkVTK_ShapeData.hxx>
 #include <IVtkOCC_ShapeMesher.hxx>
 #include <vtkType.h>
 #include <vtkAutoInit.h>
@@ -28,15 +28,18 @@ int main()
     TopoDS_Shape result = reader.OneShape();
     TopoDS_Shape shape = reader.Shape();
 
-    vtkNew<IVtkTools_ShapeDataSource> occSource;
-    occSource->SetShape(new IVtkOCC_Shape(shape));
+    Handle_IVtkOCC_Shape aShapeImpl = new IVtkOCC_Shape(shape);
+    Handle_IVtkVTK_ShapeData aDataImpl = new IVtkVTK_ShapeData();
+    Handle_IVtk_IShapeMesher aMesher = new IVtkOCC_ShapeMesher(0.0001, 12.0 * M_PI / 180, 0, 0);
+    aMesher->Build(aShapeImpl, aDataImpl);
+    vtkPolyData* aPolyData = aDataImpl->getVtkPolyData();
 
     vtkNew<vtkPolyDataMapper> mapper;
-    mapper->SetInputConnection(occSource->GetOutputPort());
-    
+    mapper->SetInputData(aPolyData);
+
     vtkNew<vtkActor> actor;
     actor->SetMapper(mapper);
-    
+
     vtkNew<vtkRenderer> ren;
     ren->AddActor(actor);
 

@@ -1,9 +1,5 @@
-#include <STEPControl_Reader.hxx>
-#include <Standard_Integer.hxx>
-#include <TopoDS_Shape.hxx>
-#include <IFSelect_ReturnStatus.hxx>
-#include <IFSelect_PrintCount.hxx>
-#include <IVtkTools_ShapeDataSource.hxx>
+#include <BRepPrimAPI_MakeBox.hxx>
+#include <IVtkVTK_ShapeData.hxx>
 #include <IVtkOCC_ShapeMesher.hxx>
 #include <vtkType.h>
 #include <vtkAutoInit.h>
@@ -19,20 +15,17 @@ VTK_MODULE_INIT(vtkInteractionStyle)
 
 int main()
 {
-    STEPControl_Reader reader;
-    IFSelect_ReturnStatus stat = reader.ReadFile("assembly_solid.stp");
-    IFSelect_PrintCount mode = IFSelect_CountByItem;
-    Standard_Integer NbRoots = reader.NbRootsForTransfer();
-    Standard_Integer num = reader.TransferRoots();
-    Standard_Integer NbTrans = reader.TransferRoots();
-    TopoDS_Shape result = reader.OneShape();
-    TopoDS_Shape shape = reader.Shape();
+    BRepPrimAPI_MakeBox mkBox(1., 2., 3);
+    const TopoDS_Shape& shape = mkBox.Shape();
 
-    vtkNew<IVtkTools_ShapeDataSource> occSource;
-    occSource->SetShape(new IVtkOCC_Shape(shape));
+    IVtkOCC_Shape::Handle aShapeImpl = new IVtkOCC_Shape(shape);
+    IVtkVTK_ShapeData::Handle aDataImpl = new IVtkVTK_ShapeData();
+    IVtk_IShapeMesher::Handle aMesher = new IVtkOCC_ShapeMesher(0.0001, 12.0*M_PI/180, 0, 0);
+    aMesher->Build(aShapeImpl, aDataImpl);
+    vtkPolyData* aPolyData = aDataImpl->getVtkPolyData();
 
     vtkNew<vtkPolyDataMapper> mapper;
-    mapper->SetInputConnection(occSource->GetOutputPort());
+    mapper->SetInputData(aPolyData);
     
     vtkNew<vtkActor> actor;
     actor->SetMapper(mapper);
