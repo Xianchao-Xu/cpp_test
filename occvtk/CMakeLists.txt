@@ -8,8 +8,8 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(VTK_DIR "C:\\Dev\\VTK\\lib\\cmake\\vtk-9.1")
 
 find_package(VTK COMPONENTS 
- vtkCommonColor
  vtkCommonCore
+ vtkFiltersCore
  vtkCommonDataModel
  vtkInteractionStyle
  vtkRenderingContextOpenGL2
@@ -34,3 +34,10 @@ target_link_libraries(import_step TKSTEP TKIVtk TKV3d TKGeomAlgo TKMath TKXSBase
 
 add_executable(import_step2 import_step2.cpp)
 target_link_libraries(import_step2 TKSTEP TKIVtk TKV3d TKGeomAlgo TKMath TKXSBase TKernel ${VTK_LIBRARIES})
+
+add_executable(import_step3 import_step3.cpp)
+target_link_libraries(import_step3 TKSTEP TKIVtk TKV3d TKGeomAlgo TKMath TKXSBase TKernel ${VTK_LIBRARIES})
+vtk_module_autoinit(
+    TARGETS import_step3
+    MODULES ${VTK_LIBRARIES}
+)
