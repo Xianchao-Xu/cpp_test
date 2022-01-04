@@ -12,7 +12,6 @@
 #include <vtkRenderWindowInteractor.h>
 #include <vtkInteractorStyleTrackballCamera.h>
 #include <vtkPolyDataNormals.h>
-#include <vtkSmoothPolyDataFilter.h>
 
 int main()
 {
@@ -27,21 +26,12 @@ int main()
 
     Handle_IVtkOCC_Shape aShapeImpl = new IVtkOCC_Shape(shape);
     Handle_IVtkVTK_ShapeData aDataImpl = new IVtkVTK_ShapeData();
-    Handle_IVtk_IShapeMesher aMesher = new IVtkOCC_ShapeMesher(0.0001, 6.0 * M_PI / 180, 0, 0);
+    Handle_IVtk_IShapeMesher aMesher = new IVtkOCC_ShapeMesher(0.0001, 3.0 * M_PI / 180, 0, 0);
     aMesher->Build(aShapeImpl, aDataImpl);
     vtkPolyData* aPolyData = aDataImpl->getVtkPolyData();
 
-    vtkNew<vtkSmoothPolyDataFilter> smoothFilter;
-    smoothFilter->SetInputData(aPolyData);
-    smoothFilter->SetNumberOfIterations(5);
-    smoothFilter->FeatureEdgeSmoothingOff();
-    smoothFilter->BoundarySmoothingOn();
-    smoothFilter->Update();
-
     vtkNew<vtkPolyDataNormals> normalGenerator;
-    normalGenerator->SetInputConnection(smoothFilter->GetOutputPort());
-    normalGenerator->ComputePointNormalsOn();
-    normalGenerator->ComputeCellNormalsOn();
+    normalGenerator->SetInputData(aPolyData);
     normalGenerator->Update();
 
     vtkNew<vtkPolyDataMapper> mapper;
