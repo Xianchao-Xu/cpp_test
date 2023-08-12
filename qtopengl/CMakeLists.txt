@@ -3,6 +3,8 @@ cmake_minimum_required(VERSION 3.15)
 project(qtopengl LANGUAGES CXX)
 
 set(CMAKE_AUTOMOC ON)
+SET(CMAKE_AUTOUIC ON)
+SET(CMAKE_AUTORCC ON)
 
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
@@ -13,14 +15,10 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${CMAKE_BINARY_DIR}/lib)
 
 find_package(Qt5 COMPONENTS Gui Core Widgets REQUIRED)
 
-add_executable(openglwindow
-    main.cpp
-    MainWindow.cpp MainWindow.h
-    OpenGLWidget.cpp OpenGLWidget.h
+include_directories(
+    ${PROJECT_SOURCE_DIR}
+    ${PROJECT_SOURCE_DIR}/OpenGLWidgetUI
 )
 
-target_link_libraries(openglwindow PUBLIC
-    Qt::Core
-    Qt::Gui
-    Qt::Widgets
-)
+add_subdirectory(OpenGLWidgetNoUI)
+add_subdirectory(OpenGLWidgetUI)
