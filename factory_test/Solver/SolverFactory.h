@@ -8,6 +8,7 @@
 
 class Solver;
 
+// 必须先实现一个基类，再用模板类继承。只有这样，才能通过基类将模板类的实例存储到容器中
 class SolverAPI SolverFactory
 {
 public:
