@@ -5,7 +5,7 @@ project(occvtk LANGUAGES CXX)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-set(VTK_DIR "C:\\Dev\\VTK\\lib\\cmake\\vtk-9.1")
+set(VTK_DIR "C:/Program Files/VTK/lib/cmake/vtk-9.1")
 
 find_package(VTK COMPONENTS 
  vtkCommonCore
@@ -20,8 +20,8 @@ find_package(VTK COMPONENTS
  QUIET
 )
 
-include_directories("C:\\Dev\\OCCT\\inc")
-link_directories("C:\\Dev\\OCCT\\win64\\vc14\\lib")
+include_directories("C:/Program Files/OCCT/inc")
+link_directories("C:/Program Files/OCCT/win64/vc14/lib")
 
 add_executable(make_box make_box.cpp)
 target_link_libraries(make_box TKPrim TKIVtk TKMath TKernel TKTopAlgo TKGeomAlgo TKV3d ${VTK_LIBRARIES})
